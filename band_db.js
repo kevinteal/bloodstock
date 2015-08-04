@@ -41,7 +41,7 @@ tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (19, "Agalloch", "Ronnie James Dio Stage", 20150809, 1100, 1140, 0, 0, "Sunday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (20, "Wolf", "Ronnie James Dio Stage", 20150809, 1200, 1240, 0, 0, "Sunday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (21, "Orange Goblin", "Ronnie James Dio Stage", 20150809, 1305, 1345, 0, 0, "Sunday")');
-tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (22, "Pro", "Ronnie James Dio Stage", 20150809, 1410, 1455, 0, 0, "Sunday")');
+tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (22, "Pro Pain", "Ronnie James Dio Stage", 20150809, 1410, 1455, 0, 0, "Sunday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (23, "Sepultura", "Ronnie James Dio Stage", 20150809, 1520, 1605, 0, 0, "Sunday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (24, "Ensiferum", "Ronnie James Dio Stage", 20150809, 1635, 1720, 0, 0, "Sunday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (25, "Cannibal Corpse", "Ronnie James Dio Stage", 20150809, 1755, 1855, 0, 0, "Sunday")');
@@ -59,7 +59,7 @@ tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (34, "Oaf", "Sophie Lancaster Stage", 20150807, 1150, 1220, 0, 1, "Friday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (35, "Bast", "Sophie Lancaster Stage", 20150807, 1240, 1310, 0, 1, "Friday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (36, "Messiahs Kiss", "Sophie Lancaster Stage", 20150807, 1330, 1400, 0, 1, "Friday")');
-tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (37, "Re", "Sophie Lancaster Stage", 20150807, 1420, 1500, 0, 1, "Friday")');
+tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (37, "Re Animator", "Sophie Lancaster Stage", 20150807, 1420, 1500, 0, 1, "Friday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (38, "Ne Obliviscaris", "Sophie Lancaster Stage", 20150807, 1520, 1600, 0, 1, "Friday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (39, "Fire Red Empress", "Sophie Lancaster Stage", 20150807, 1625, 1705, 0, 1, "Friday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (40, "Hang The Bastard", "Sophie Lancaster Stage", 20150807, 1735, 1815, 0, 1, "Friday")');
@@ -161,10 +161,11 @@ tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (124, "Blind Haze", "Jagermeister Stage", 20150809, 1900, 1930, 0, 3, "Sunday")');
 tx.executeSql('INSERT INTO bands (id, band_name, stage, day, start_time, finish_time, band_fav, stage_rank, day_name) VALUES (125, "Hell Puppets", "Jagermeister Stage", 20150809, 2030, 2100, 0, 3, "Sunday")');
 		
-		
+		});
+	db.transaction(function (tx) {	
 	
-	
-		
+		tx.executeSql('UPDATE bands SET band_name="Re Animator" WHERE id=37');
+		tx.executeSql('UPDATE bands SET band_name="Pro Pain" WHERE id=22');
 		set_up_main_page();
 	});
 }

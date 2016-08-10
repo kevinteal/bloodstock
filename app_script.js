@@ -1,8 +1,11 @@
 // JavaScript Document
-var db = openDatabase('bloodstock_2015_bands_db', '1.0', 'bands db', 2 * 1024 * 1024);
+var db = openDatabase('bloodstock_2016_bands_db', '1.0', 'bands db', 2 * 1024 * 1024);
 var total_stages =0;
 var day_arr=[];
 var day_name_arr=[];
+
+var _table_name_ = "bands_2016_v1";
+
 $(document).ready(function(e) {
     console.log("ready!");
 	//setup database if it does not exist
@@ -243,7 +246,7 @@ function add_to_plan2(e,method){
 		//console.log("its on");
 		
 		db.transaction(function (txs) {
-				txs.executeSql('UPDATE bands SET band_fav=1 WHERE id='+band_id+'');
+				txs.executeSql('UPDATE '+_table_name_+' SET band_fav=1 WHERE id='+band_id+'');
 		});
 		
 		
@@ -251,7 +254,7 @@ function add_to_plan2(e,method){
 		//take band off see list, make band_fav 0
 		//console.log("na na na na na");
 		db.transaction(function (txs) {
-				txs.executeSql('UPDATE bands SET band_fav=0 WHERE id='+band_id+'');
+				txs.executeSql('UPDATE '+_table_name_+' SET band_fav=0 WHERE id='+band_id+'');
 		});
 	}
 	
@@ -263,7 +266,7 @@ function add_to_plan2(e,method){
 //defunked function, unused
 function set_up_stages(){
 	db.transaction(function (txs) {
-						txs.executeSql('select max(stage_rank) as total_stages from bands', [], function(txs, results){
+						txs.executeSql('select max(stage_rank) as total_stages from '+_table_name_+' ', [], function(txs, results){
 							var result = results.rows.item(0);
 							
 							total_stages = result.total_stages;
@@ -288,11 +291,12 @@ function set_up_main_page(){
 	//time=0050;
 	//sql to select all unique dates.
 	//create array as unknown lenght
+	console.log("today: "+fulldate);
 	
 	db.transaction(function (txs) {
 		
 		//how many stages?
-		txs.executeSql('select DISTINCT stage_rank, stage from bands order by stage_rank ASC', [], function(txs, results){
+		txs.executeSql('select DISTINCT stage_rank, stage from '+_table_name_+' order by stage_rank ASC', [], function(txs, results){
 							var len = results.rows.length, i;
 							
 							var last_stage=0;
@@ -335,7 +339,7 @@ function set_up_main_page(){
 		
 						//find the days the festival is on for
 						//also finds the number of days
-						txs.executeSql('select day,day_name from bands group by day order by day asc', [], function(txs, results){
+						txs.executeSql('select day,day_name from '+_table_name_+' group by day order by day asc', [], function(txs, results){
 							var len = results.rows.length, i;
 							for(i=0;i<len;i++)
 								{	
@@ -370,9 +374,9 @@ function set_up_main_page(){
 										//find any bands that start before midnight and finish after current time
 										//if no results run new search where start time can be normal but sqlfulldate still -1
 										//sqlfulldate would/is already set to modified -1
-	 								   sql = "select * from bands where day = "+sqlfulldate+" and start_time > 700 and finish_time BETWEEN "+time+" AND 700";
+	 								   sql = "select * from "+_table_name_+" where day = "+sqlfulldate+" and start_time > 700 and finish_time BETWEEN "+time+" AND 700";
 									}else{
-									sql = "select * from bands where day = "+sqlfulldate+" and start_time <= "+time+" and finish_time > "+time;
+									sql = "select * from "+_table_name_+" where day = "+sqlfulldate+" and start_time <= "+time+" and finish_time > "+time;
 									}
 									
 																		
@@ -385,7 +389,7 @@ function set_up_main_page(){
 									if(time<700 && len != num_stages ){
 										console.log("lenkkkkevin");
 										db.transaction(function (txs2) {
-											sql = "select * from bands where day = "+sqlfulldate+" and start_time <= "+time+" and finish_time > "+time;
+											sql = "select * from "+_table_name_+" where day = "+sqlfulldate+" and start_time <= "+time+" and finish_time > "+time;
 											txs2.executeSql(sql, [], function(txs, results){
 												var len = results.rows.length, i;
 												//console.log("HERHEHEHEkeek"+len);
@@ -400,7 +404,7 @@ function set_up_main_page(){
 									// third option of time being 2340 and band starting at 2300 and playing until after midnight
 									if(time>700 && len == 0 ){
 										db.transaction(function (txs2) {
-											sql = "select * from bands where day = "+sqlfulldate+" and start_time BETWEEN 700 AND "+time+" and finish_time BETWEEN 000 AND 700";
+											sql = "select * from "+_table_name_+" where day = "+sqlfulldate+" and start_time BETWEEN 700 AND "+time+" and finish_time BETWEEN 000 AND 700";
 											txs2.executeSql(sql, [], function(txs, results){
 												var len = results.rows.length, i;
 												console.log(len);
@@ -456,9 +460,9 @@ function next_bands(txs,StageName,fulldate,time){
 	sqlfulldate = fulldate;
 	if(time<700){
 			sqlfulldate=sqlfulldate-1;
-			sql = "select * from bands where day = "+sqlfulldate+" and start_time > "+time+" and stage_rank='"+StageName+"' order by start_time ASC Limit 1";
+			sql = "select * from "+_table_name_+" where day = "+sqlfulldate+" and start_time > "+time+" and stage_rank='"+StageName+"' order by start_time ASC Limit 1";
 	}else{
-		sql = "select * from bands where day = "+fulldate+" and start_time > "+time+" and stage_rank='"+StageName+"' order by start_time ASC Limit 1";
+		sql = "select * from "+_table_name_+" where day = "+fulldate+" and start_time > "+time+" and stage_rank='"+StageName+"' order by start_time ASC Limit 1";
 	}
 
 
@@ -471,7 +475,7 @@ function next_bands(txs,StageName,fulldate,time){
 							if(time>700 && len == 0 ){
 								var sqlfulldate2 = fulldate - 1;
 									db.transaction(function (txs2) {
-										sql = "select * from bands where day = "+fulldate+" and start_time BETWEEN 000 AND 700 and stage_rank='"+StageName+"' order by start_time ASC Limit 1 ";
+										sql = "select * from "+_table_name_+" where day = "+fulldate+" and start_time BETWEEN 000 AND 700 and stage_rank='"+StageName+"' order by start_time ASC Limit 1 ";
 										txs2.executeSql(sql, [], function(txs, results){
 											var len = results.rows.length, i;
 											//console.log(len);
@@ -615,7 +619,7 @@ if(stageNum!="AZ"){
 		 				//how many days is being logged.	
 						console.log(day_arr.length);
 		
-						txs.executeSql('select * from bands where stage_rank = '+stageNum+' and start_time>=700 order by start_time DESC ', [], function(txs, results){
+						txs.executeSql('select * from '+_table_name_+' where stage_rank = '+stageNum+' and start_time>=700 order by start_time DESC ', [], function(txs, results){
 							var len = results.rows.length, i;
 							for(var i=0;i<len;i++)
 								{	
@@ -632,7 +636,7 @@ if(stageNum!="AZ"){
 								
 								
 						});
-						txs.executeSql('select * from bands where stage_rank = '+stageNum+' and start_time<700 order by start_time ASC ', [], function(txs, results){
+						txs.executeSql('select * from '+_table_name_+' where stage_rank = '+stageNum+' and start_time<700 order by start_time ASC ', [], function(txs, results){
 							
 							
 							var len = results.rows.length, i;
@@ -662,7 +666,7 @@ if(stageNum!="AZ"){
 	var az_day = "";
 	db.transaction(function (txs) {
 		 	
-			txs.executeSql('select day from bands order by day ASC Limit 1', [], function(txs, results){
+			txs.executeSql('select day from '+_table_name_+' order by day ASC Limit 1', [], function(txs, results){
 				var day = results.rows.item(0).day;
 				$( "#tabs_lineup" ).tabs( "option", "active", 0 );
 				bg_chang(day,"lu");
@@ -670,7 +674,7 @@ if(stageNum!="AZ"){
 			});
 			
 			
-			txs.executeSql('select * from bands order by band_name ASC', [], function(txs, results){
+			txs.executeSql('select * from '+_table_name_+' order by band_name ASC', [], function(txs, results){
 				var len = results.rows.length, i;
 				for(var i=0;i<len;i++)
 					{	
@@ -828,7 +832,7 @@ function load_band_fav(){
 		// console.log(day_arr);
 		 $.each(day_arr, function (index,val){
 						
-						txs.executeSql('select * from bands where band_fav=1 and day='+val+' and start_time>=700 order by start_time ASC ', [], function(txs, results){
+						txs.executeSql('select * from '+_table_name_+' where band_fav=1 and day='+val+' and start_time>=700 order by start_time ASC ', [], function(txs, results){
 							var len = results.rows.length, i;
 							
 							var preEnd_1 = 0;
@@ -896,7 +900,7 @@ function load_band_fav(){
 							$("#tabs_day").trigger('updatelayout');
 						});//exectue
 						
-						txs.executeSql('select * from bands where band_fav=1 and day='+val+' and start_time<700 order by start_time ASC ', [], function(txs, results){
+						txs.executeSql('select * from '+_table_name_+' where band_fav=1 and day='+val+' and start_time<700 order by start_time ASC ', [], function(txs, results){
 							var len = results.rows.length, i;
 							
 							var checker = false;
@@ -1395,7 +1399,7 @@ function smaller_band_name(band_name){
 function clearplan(){
 	console.log("clear plan");
 	db.transaction(function (txs) {
-				txs.executeSql('UPDATE bands SET band_fav=0 WHERE band_fav=1');
+				txs.executeSql('UPDATE '+_table_name_+' SET band_fav=0 WHERE band_fav=1');
 		});
 		//tabs need refreshing but this way should work faster for same result.
 		//$("#tab_one_day,#tab_two_day,#tab_three_day").empty();
